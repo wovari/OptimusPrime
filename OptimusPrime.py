@@ -23,8 +23,8 @@ for row in trainingset:
     Styles.add(row[4])
     Years.add(row[5])
     Tempos.add(row[6])
-    # tree = ET.parse(id + ".xml")
-    # root = tree.getroot()
+    tree = ET.parse("songs-xml/"+id + ".xml")
+    root = tree.getroot()
 
 
 test = open(sys.argv[2])
@@ -34,7 +34,7 @@ test = open(sys.argv[2])
 testset = csv.reader(test, delimiter=";")
 
 
-   
+
 
 with open(sys.argv[3], 'w') as csvfile:
     fieldnames = ['id','Performer','Inst','Style','Year','Tempo']
@@ -43,7 +43,5 @@ with open(sys.argv[3], 'w') as csvfile:
     for row in testset:
         id = row[0]
         writer.writerow({'id': id ,'Performer': (random.sample(Performers, 1))[0] ,'Inst': (random.sample(Insts, 1))[0],'Style': (random.sample(Styles, 1))[0],'Year': (random.sample(Years, 1))[0],'Tempo' : (random.sample(Tempos, 1))[0]})
-        # tree = ET.parse(id + ".xml")
-        # root = tree.getroot()
-
-
+        tree = ET.parse("songs-xml/" + id + ".xml")
+        root = tree.getroot()
