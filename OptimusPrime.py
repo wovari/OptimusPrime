@@ -16,3 +16,10 @@ for row in trainingset:
 test = open(sys.argv[2])
 
 testset = csv.reader(test, delimiter=";")
+
+for row in testset
+    id = row[0]
+    tree = ET.parse(id + ".xml")
+    root = tree.getroot()
+
+    #Here is where the other part of the magic happens
