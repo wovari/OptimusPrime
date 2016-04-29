@@ -8,7 +8,7 @@ $noFolds = 5;
 $inputDir = $ARGV[0];
 
 # Read dataset
-open (my $fh, '<', $inputDir . '/dataset-balanced.csv');
+open (my $fh, '<', $inputDir . 'dataset-balanced.csv');
     my @lines = <$fh>;
     @lines = @lines[ 1 .. $#lines ]; #skip first line
 close($fh);
@@ -27,16 +27,16 @@ for ($fold=0; $fold < $noFolds; $fold++) {
     foreach $line (@lines) {
         if (($c - $fold) % 5 == 0) {
             # Test item, strip data to be predicted
-            @fields = split(';', $line);            
+            @fields = split(';', $line);
             $strip_line = $fields[0] . ';;;;;;;' . "\n";
-            #$strip_line = $fields[1] . ';' . $fields[3] . ';' . $fields[4] . ';' . $fields[5] . ';' . $fields[6] . "\n";            
+            #$strip_line = $fields[1] . ';' . $fields[3] . ';' . $fields[4] . ';' . $fields[5] . ';' . $fields[6] . "\n";
 
             $performer[$tc] = $fields[1];
             $instrument[$tc] = $fields[3];
             $style[$tc] = $fields[4];
             $year[$tc] = $fields[5];
-            $tempo[$tc] = $fields[6];            
-            
+            $tempo[$tc] = $fields[6];
+
             print $test_fh $strip_line;
             $tc=$tc+1;
         }
@@ -44,35 +44,36 @@ for ($fold=0; $fold < $noFolds; $fold++) {
             # Training item
             print $training_fh $line;
         }
-        
+
         $c=$c+1;
-    }   
-    
+    }
+
     # Close files
     close($test_fh);
     close($training_fh);
-    
-    # Run classifier    
+
+    # Run classifier
     system('python OptimusPrime.py training-data-file-' . $fold .'.csv test-data-file-' .$fold . '.csv output-file-' . $fold . '.csv');
-    
+
     # Compare outputs with data that was stripped
     open (my $fh, '<', 'output-file-' . $fold .'.csv');
     my @lines = <$fh>;
-       
+    @lines = @lines[ 1 .. $#lines ];
+
     # Keep score
     $c=0;
     for $line(@lines) {
         @field = split(';', $line);
-                
+
         $performerPerformance[$fold] += !($field[0] eq $performer[$c]);
         $instrumentPerformance[$fold] += !($field[1] eq $instrument[$c]);
         $stylePerformance[$fold] += !($field[2] eq $style[$c]);
         $yearPerformance[$fold] += abs($field[3] - $year[$c]);
         $tempoPerformance[$fold] += abs($field[4] - $tempo[$c]);
-        
+
         $c=$c+1;
-        
-    }    
+
+    }
 }
 
 
@@ -84,4 +85,3 @@ print "Instrument prediction\t" . join(';', @instrumentPerformance) . " => " . s
 print "Style prediction\t" . join(';', @stylePerformance) . " => " . sum(@stylePerformance) ."\n";
 print "Year prediction\t\t" . join(';', @yearPerformance) . " => " . sum(@yearPerformance) ."\n";
 print "Tempo prediction\t" . join(';', @tempoPerformance) . " => " . sum(@tempoPerformance) ."\n";
-
