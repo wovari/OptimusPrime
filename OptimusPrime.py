@@ -25,6 +25,21 @@ for row in trainingset:
     Tempos.add(row[6])
     tree = ET.parse("songs-xml/"+id + ".xml")
     root = tree.getroot()
+    noteCtr = 0
+    durCtr = 0
+    for measure in root.findall("part/measure"):
+        for note in measure.findall("note"):
+            rest = note.find("rest")
+            if rest is None:
+                element = note.find("type")
+                # if not element is None and element.text == "quarter":
+                noteCtr += 1
+            durCtr += int(note.find("duration").text)
+
+    print("ID: %s \n ======================"%(id))
+    print("Amount of notes: %d"%(noteCtr))
+    print("Duration: %d"%(durCtr))
+    print("Tempo: %d"%(durCtr/noteCtr))
 
 
 test = open(sys.argv[2])
