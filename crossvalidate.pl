@@ -8,7 +8,7 @@ $noFolds = 5;
 $inputDir = $ARGV[0];
 
 # Read dataset
-open (my $fh, '<', $inputDir . 'dataset-balanced.csv');
+open (my $fh, '<', $inputDir . '/dataset-balanced.csv');
     my @lines = <$fh>;
     @lines = @lines[ 1 .. $#lines ]; #skip first line
 close($fh);
