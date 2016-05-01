@@ -35,8 +35,44 @@ def pretty_scatter(values, legend, output):
            ncol=5,
            fontsize=5)
 
-    plt.savefig(output)
+    plt.savefig("./plots/" + output)
         
         
+
+def extract_useful_features(matrix_set):
+    index_set = set()
+    
+    for i in range(len(matrix_set[0])):
+        for matrix in matrix_set:
+            #check if index contributes for a matrix in the set
+            if (matrix[i] != 0):
+                index_set.add(i)
+
+    #construct new set with useful matrix features 
+    new_matrix_set = []
+
+    for matrix in matrix_set:
+        temp_matrix = []
+        for j in index_set:
+            temp_matrix.append(matrix[j])
+        #add new matrix to solution
+        new_matrix_set.append(temp_matrix)
+    print("Reducing trainingsset features From " + str(len(matrix_set[0]))+ " To " + str(len(new_matrix_set[0])))
+    return new_matrix_set,index_set
+
+
+def extract_features_of_trainingsset(testset, index_set):
+    #construct new set with the right matrix features 
+    new_matrix_set = []
+
+    for matrix in testset:
+        temp_matrix = []
+        for j in index_set:
+            temp_matrix.append(matrix[j])
+        #add new matrix to solution
+        new_matrix_set.append(temp_matrix)
+    print("Reducing testset features From " + str(len(testset[0])) + " To " + str(len(new_matrix_set[0])))
+
+    return new_matrix_set
 
 
