@@ -20,7 +20,6 @@ Styles_solution,\
 Years_solution,\
 Tempos_solution = construct_analytics_matrix_trainset(sys.argv[1])
 
-
 new_matrix_set,index_set = extract_useful_features(analytics_matrices_trainingsset)
 
 analytics_matrices_trainingsset = new_matrix_set
@@ -76,13 +75,3 @@ with open(sys.argv[3], 'w') as csvfile:
     for i in range(len(analytics_matrices_testset)):
         id = testset_id[i]
         writer.writerow({'id': id ,'Performer': Performers_predictions[i] ,'Inst': Insts_predictions[i],'Style': Styles_predictions[i],'Year': Years_predictions[i],'Tempo' : Tempos_predictions[i]})
-
-
-
-
-
-
-
-
-
-

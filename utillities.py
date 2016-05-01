@@ -17,14 +17,14 @@ def pretty_scatter(values, legend, output):
     for i in range(len(legend)):
         if legend[i] in scatter_dict:
             scatter_dict[legend[i]].append(values[i])
-        else: 
+        else:
             scatter_dict[legend[i]] = [values[i]]
 
     text = iter(scatter_dict.keys())
 
     plot_list = []
     for key in scatter_dict.keys():
-        
+
         X = [x[0] for x in scatter_dict[key]]
         y = [x[1] for x in scatter_dict[key]]
 
@@ -36,19 +36,19 @@ def pretty_scatter(values, legend, output):
            fontsize=5)
 
     plt.savefig("./plots/" + output)
-        
-        
+
+
 
 def extract_useful_features(matrix_set):
     index_set = set()
-    
+    print(len(matrix_set[0]))
     for i in range(len(matrix_set[0])):
         for matrix in matrix_set:
             #check if index contributes for a matrix in the set
             if (matrix[i] != 0):
                 index_set.add(i)
 
-    #construct new set with useful matrix features 
+    #construct new set with useful matrix features
     new_matrix_set = []
 
     for matrix in matrix_set:
@@ -62,7 +62,7 @@ def extract_useful_features(matrix_set):
 
 
 def extract_features_of_trainingsset(testset, index_set):
-    #construct new set with the right matrix features 
+    #construct new set with the right matrix features
     new_matrix_set = []
 
     for matrix in testset:
@@ -74,5 +74,3 @@ def extract_features_of_trainingsset(testset, index_set):
     print("Reducing testset features From " + str(len(testset[0])) + " To " + str(len(new_matrix_set[0])))
 
     return new_matrix_set
-
-
