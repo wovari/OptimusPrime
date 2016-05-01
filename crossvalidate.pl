@@ -65,11 +65,11 @@ for ($fold=0; $fold < $noFolds; $fold++) {
     for $line(@lines) {
         @field = split(';', $line);
 
-        $performerPerformance[$fold] += !($field[0] eq $performer[$c]);
-        $instrumentPerformance[$fold] += !($field[1] eq $instrument[$c]);
-        $stylePerformance[$fold] += !($field[2] eq $style[$c]);
-        $yearPerformance[$fold] += abs($field[3] - $year[$c]);
-        $tempoPerformance[$fold] += abs($field[4] - $tempo[$c]);
+        $performerPerformance[$fold] += !($field[1] eq $performer[$c]);
+        $instrumentPerformance[$fold] += !($field[2] eq $instrument[$c]);
+        $stylePerformance[$fold] += !($field[3] eq $style[$c]);
+        $yearPerformance[$fold] += abs($field[4] - $year[$c]);
+        $tempoPerformance[$fold] += abs($field[5] - $tempo[$c]);
 
         $c=$c+1;
 
