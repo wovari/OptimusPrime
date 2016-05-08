@@ -53,7 +53,9 @@ for ($fold=0; $fold < $noFolds; $fold++) {
     close($training_fh);
 
     # Run classifier
-    system('python Source/OptimusPrime.py training-data-file-' . $fold .'.csv test-data-file-' .$fold . '.csv output-file-' . $fold . '.csv');
+
+    system('python "Source/OptimusPrime.py" training-data-file-' . $fold .'.csv test-data-file-' .$fold . '.csv output-file-' . $fold . '.csv');
+
 
     # Compare outputs with data that was stripped
     open (my $fh, '<', 'output-file-' . $fold .'.csv');
