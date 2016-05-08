@@ -1,8 +1,10 @@
 import csv
 import sys
 import random
+import pprint
 import xml.etree.ElementTree as ET
 import numpy as np
+from sets import Set
 from utillities import *
 from constructors import *
 from sklearn.svm import SVC
@@ -23,12 +25,12 @@ def construct_analytics_matrix_trainset(filename):
     set_ids = []
 
     for row in reader:
-  
+
         #get information of trainingsset
         id_file = row[0]
 
         analytics_matrix = construct_analytics_matrix(id_file)
-        
+
         Performers_solution.append(row[1])
         Insts_solution.append(row[3])
         Styles_solution.append(row[4])
@@ -65,9 +67,20 @@ def construct_analytics_matrix(id):
 
     #Load in songxml
     tree = ET.parse("songs-xml/"+ id + ".xml")
-    
-    #get root 
+
+    #get root
     root = tree.getroot()
+
+    #TESTCODE
+    test = []
+    for row in list_of_note_comb(root):
+        if row[1] > 1:
+            test.append(row)
+
+    test = sorted(test, key=lambda row: row[1])
+    pp = pprint.PrettyPrinter()
+    pp.pprint(test)
+    #END TESTCODE
 
     #parse the file
 
@@ -86,3 +99,50 @@ def construct_analytics_matrix(id):
 
     return analytics_matrix
 
+def list_of_note_comb(root):
+    set_of_notes = Set([])
+    list_of_measures = []
+    for measure in root.findall("part/measure"):
+        substrings = all_ordered_measure_substrings(measure)
+        temp_set = Set(substrings)
+        set_of_notes = set_of_notes | temp_set
+        list_of_measures.append(substrings)
+
+    list_of_notes = sorted(list(set_of_notes), key=lambda row: len(row))
+
+    list_of_measures = np.array(list_of_measures)
+    note_comb_ctr = []
+
+    for i in range(len(list_of_notes)):
+        comb = list_of_notes[i]
+        count = sum(sum(1 for i in row if i == comb) for row in list_of_measures)
+        note_comb_ctr.append([comb, count])
+
+    return note_comb_ctr
+
+# Returns all posible ordered substrings in a measure
+def all_ordered_measure_substrings(measure):
+
+    # Make a list with all notes in the measure in stringform
+    notes = []
+    for note in measure.findall("note"):
+        rest = note.find("rest")
+        if rest is None :
+            step = note.find("pitch/step").text
+            octave = note.find("pitch/octave").text
+            notes.append(step + octave)
+        else:
+            notes.append("R0")
+
+    #Make all the possible combinations and return the list
+    resultList=[]
+
+    for i in range(len(notes)):
+        prev = notes[i]
+        resultList.append(notes[i])
+        if i != notes[-1]:
+            for j in range(i+1,len(notes)):
+                prev += notes[j]
+                resultList.append(prev)
+
+    return resultList
