@@ -20,6 +20,8 @@ Styles_solution,\
 Years_solution,\
 Tempos_solution = construct_analytics_matrix_trainset(sys.argv[1])
 
+construct_note_pattern_matrix_trainset(sys.argv[1])
+
 new_matrix_set,index_set = extract_useful_features(analytics_matrices_trainingsset)
 
 analytics_matrices_trainingsset = new_matrix_set

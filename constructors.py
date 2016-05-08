@@ -120,13 +120,14 @@ def construct_note_pattern_matrix_trainset(filename):
         Tempos_solution.append(row[6])
         set_ids.append(id_file)
         pop_notes_matrices_set.append(pop_notes_matrix)
-        different_comb = different_comb | pop_notes_matrix
+        different_comb = different_comb | Set(np.rot90(pop_notes_matrix)[1])
 
     global_combinations = []
-    for i in range(len(list(different_comb))):
-        count = sum(sum(sum(1 for i in row if i == different_comb[i]) for row in list_of_note_comb) for list_of_note_comb in pop_notes_matrices_set)
+    different_comb = list(different_comb)
+    for i in range(len(different_comb)):
+        count = sum(sum(row[1] for row in matrix if row[0] == different_comb[i]) for matrix in pop_notes_matrices_set)
         global_combinations.append([different_comb[i], count])
-
+    global_combinations = sorted(global_combinations, key=lambda row: row[1])
     print global_combinations
 
 
