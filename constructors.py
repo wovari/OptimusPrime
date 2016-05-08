@@ -23,7 +23,6 @@ def construct_analytics_matrix_trainset(filename):
     Years_solution = []
     Tempos_solution = []
     analytics_matrices_set = []
-    pop_notes_matrices_set = []
     set_ids = []
 
     for row in reader:
@@ -32,8 +31,6 @@ def construct_analytics_matrix_trainset(filename):
         id_file = row[0]
 
         analytics_matrix = construct_analytics_matrix(id_file)
-        pop_notes_matrix = get_most_pop_comb(id_file, 3, 2)
-        pop_notes_matrix = list(itertools.chain(*pop_notes_matrix))
 
         Performers_solution.append(row[1])
         Insts_solution.append(row[3])
@@ -42,15 +39,15 @@ def construct_analytics_matrix_trainset(filename):
         Tempos_solution.append(row[6])
         set_ids.append(id_file)
         analytics_matrices_set.append(analytics_matrix.flatten())
-        pop_notes_matrices_set.append(pop_notes_matrix)
-    return pop_notes_matrices_set,analytics_matrices_set,set_ids,Performers_solution,Insts_solution,Styles_solution,Years_solution,Tempos_solution
+
+
+    return analytics_matrices_set,set_ids,Performers_solution,Insts_solution,Styles_solution,Years_solution,Tempos_solution
 
 
 #Constructs a analytics matrix for testset
 def construct_analytics_matrix_testset(filename):
     set_ids = []
     analytics_matrices_set = []
-    pop_notes_matrices_set = []
     setfile= open(filename)
     reader = csv.reader(setfile, delimiter=";")
     for row in reader:
@@ -58,14 +55,12 @@ def construct_analytics_matrix_testset(filename):
         id = row[0]
 
         analytics_matrix = construct_analytics_matrix(id)
-        pop_notes_matrix = get_most_pop_comb(id, 3, 2)
 
         #add elements to result
         analytics_matrices_set.append(analytics_matrix.flatten())
-        pop_notes_matrices_set.append(pop_notes_matrix.flatten())
 
         set_ids.append(id)
-    return pop_notes_matrices_set,analytics_matrices_set,set_ids
+    return analytics_matrices_set,set_ids
 
 
 def construct_analytics_matrix(id):
@@ -95,6 +90,47 @@ def construct_analytics_matrix(id):
     analytics_matrix = np.divide(analytics_matrix, total_sum_of_notes)
 
     return analytics_matrix
+
+def construct_note_pattern_matrix_trainset(filename):
+    setfile= open(filename)
+    print(filename)
+    reader = csv.reader(setfile, delimiter=";")
+
+    #General Statistics
+    Performers_solution = []
+    Insts_solution = []
+    Styles_solution = []
+    Years_solution = []
+    Tempos_solution = []
+    pop_notes_matrices_set = []
+    set_ids = []
+
+    different_comb = Set([])
+
+    for row in reader:
+        #get information of trainingsset
+        id_file = row[0]
+
+        pop_notes_matrix = get_most_pop_comb(id_file, 3, 2)
+
+        Performers_solution.append(row[1])
+        Insts_solution.append(row[3])
+        Styles_solution.append(row[4])
+        Years_solution.append(row[5])
+        Tempos_solution.append(row[6])
+        set_ids.append(id_file)
+        pop_notes_matrices_set.append(pop_notes_matrix)
+        different_comb = different_comb | pop_notes_matrix
+
+    global_combinations = []
+    for i in range(len(list(different_comb))):
+        count = sum(sum(sum(1 for i in row if i == different_comb[i]) for row in list_of_note_comb) for list_of_note_comb in pop_notes_matrices_set)
+        global_combinations.append([different_comb[i], count])
+
+    print global_combinations
+
+
+
 
 def get_most_pop_comb(id, min_size, min_occ):
     #Load in songxml
