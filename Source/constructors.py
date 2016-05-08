@@ -12,7 +12,7 @@ from sklearn.svm import SVC
 from sklearn.decomposition import TruncatedSVD
 import matplotlib.pyplot as plt
 #Constructs a analytics matrix for trainingsset
-def construct_analytics_matrix_trainset(filename):
+def construct_analytics_matrix_trainset(filename, features_selection_procedure ):
     setfile= open(filename)
     print(filename)
     reader = csv.reader(setfile, delimiter=";")
@@ -30,7 +30,7 @@ def construct_analytics_matrix_trainset(filename):
         #get information of trainingsset
         id_file = row[0]
 
-        analytics_matrix = construct_analytics_matrix(id_file)
+        analytics_matrix = features_selection_procedure(id_file)
 
         Performers_solution.append(row[1])
         Insts_solution.append(row[3])
@@ -45,7 +45,7 @@ def construct_analytics_matrix_trainset(filename):
 
 
 #Constructs a analytics matrix for testset
-def construct_analytics_matrix_testset(filename):
+def construct_analytics_matrix_testset(filename, features_selection_procedure):
     set_ids = []
     analytics_matrices_set = []
     setfile= open(filename)
@@ -54,7 +54,7 @@ def construct_analytics_matrix_testset(filename):
         #get information of trainingsset
         id = row[0]
 
-        analytics_matrix = construct_analytics_matrix(id)
+        analytics_matrix = features_selection_procedure(id)
 
         #add elements to result
         analytics_matrices_set.append(analytics_matrix.flatten())
@@ -90,6 +90,39 @@ def construct_analytics_matrix(id):
     analytics_matrix = np.divide(analytics_matrix, total_sum_of_notes)
 
     return analytics_matrix
+
+
+
+
+def construct_note_type_feature_matrix(id):
+    #1,half,quarter,eight,16th
+    analytics_matrix = np.zeros(14)
+
+
+    #Load in songxml
+    tree = ET.parse("songs-xml/"+ id + ".xml")
+
+    #get root
+    root = tree.getroot()
+
+     #parse the file
+
+    for measure in root.findall("part/measure"):
+        for note in measure.findall("note"):
+            rest = note.find("rest")
+            if rest is None:
+                #get right index
+                index = map_type_to_index(note.find("type").text)
+
+                #mark in matrix
+                analytics_matrix[index] += 1
+
+    total_sum_of_notes = analytics_matrix.sum()
+    analytics_matrix = np.divide(analytics_matrix, total_sum_of_notes)
+    return analytics_matrix
+
+
+
 
 def construct_note_pattern_matrix_trainset(filename):
     setfile= open(filename)

@@ -6,6 +6,12 @@ def map_step_to_index(Step):
     return mapping_dict[Step]
 
 
+def map_type_to_index(Type):
+    mapping_dict = {'maxima': 0, 'long': 1, 'breve':2 ,'whole':3 , 'half':4, 'quarter':5,'eighth':6, '16th':7,'32nd':8, '64th':9,'128th':10, '256th':11,'512th':12,'1024th':13}
+    return mapping_dict[Type]
+
+
+
 
 
 def pretty_scatter(values, legend, output):

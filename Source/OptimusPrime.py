@@ -18,13 +18,11 @@ Performers_solution,\
 Insts_solution,\
 Styles_solution,\
 Years_solution,\
-Tempos_solution = construct_analytics_matrix_trainset(sys.argv[1])
+Tempos_solution = construct_analytics_matrix_trainset(sys.argv[1],construct_analytics_matrix)
 
-construct_note_pattern_matrix_trainset(sys.argv[1])
-
-new_matrix_set,index_set = extract_useful_features(analytics_matrices_trainingsset)
-
-analytics_matrices_trainingsset = new_matrix_set
+# construct_note_pattern_matrix_trainset(sys.argv[1])
+# new_matrix_set,index_set = extract_useful_features(analytics_matrices_trainingsset)
+# analytics_matrices_trainingsset = new_matrix_set
 
 
 #code to make scatter plots
@@ -66,8 +64,8 @@ Tempos_SVC.fit(analytics_matrices_trainingsset,Tempos_solution)
 
 
 
-analytics_matrices_testset, testset_id =  construct_analytics_matrix_testset(sys.argv[2])
-analytics_matrices_testset = extract_features_of_trainingsset(analytics_matrices_testset,index_set)
+analytics_matrices_testset, testset_id =  construct_analytics_matrix_testset(sys.argv[2],construct_analytics_matrix)
+# analytics_matrices_testset = extract_features_of_trainingsset(analytics_matrices_testset,index_set)
 
 Performers_predictions = Performers_SVC.predict(analytics_matrices_testset)
 # Performers_predictions = Performers_SVC.predict(pop_notes_matrices_testset)
