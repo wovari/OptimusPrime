@@ -2,6 +2,7 @@ import csv
 import sys
 import random
 import pprint
+import itertools
 import xml.etree.ElementTree as ET
 import numpy as np
 from sets import Set
@@ -22,6 +23,7 @@ def construct_analytics_matrix_trainset(filename):
     Years_solution = []
     Tempos_solution = []
     analytics_matrices_set = []
+    pop_notes_matrices_set = []
     set_ids = []
 
     for row in reader:
@@ -30,6 +32,8 @@ def construct_analytics_matrix_trainset(filename):
         id_file = row[0]
 
         analytics_matrix = construct_analytics_matrix(id_file)
+        pop_notes_matrix = get_most_pop_comb(id_file, 3, 2)
+        pop_notes_matrix = list(itertools.chain(*pop_notes_matrix))
 
         Performers_solution.append(row[1])
         Insts_solution.append(row[3])
@@ -38,13 +42,15 @@ def construct_analytics_matrix_trainset(filename):
         Tempos_solution.append(row[6])
         set_ids.append(id_file)
         analytics_matrices_set.append(analytics_matrix.flatten())
-    return analytics_matrices_set,set_ids,Performers_solution,Insts_solution,Styles_solution,Years_solution,Tempos_solution
+        pop_notes_matrices_set.append(pop_notes_matrix)
+    return pop_notes_matrices_set,analytics_matrices_set,set_ids,Performers_solution,Insts_solution,Styles_solution,Years_solution,Tempos_solution
 
 
 #Constructs a analytics matrix for testset
 def construct_analytics_matrix_testset(filename):
     set_ids = []
     analytics_matrices_set = []
+    pop_notes_matrices_set = []
     setfile= open(filename)
     reader = csv.reader(setfile, delimiter=";")
     for row in reader:
@@ -52,12 +58,14 @@ def construct_analytics_matrix_testset(filename):
         id = row[0]
 
         analytics_matrix = construct_analytics_matrix(id)
+        pop_notes_matrix = get_most_pop_comb(id, 3, 2)
 
         #add elements to result
         analytics_matrices_set.append(analytics_matrix.flatten())
+        pop_notes_matrices_set.append(pop_notes_matrix.flatten())
 
         set_ids.append(id)
-    return analytics_matrices_set,set_ids
+    return pop_notes_matrices_set,analytics_matrices_set,set_ids
 
 
 def construct_analytics_matrix(id):
@@ -70,17 +78,6 @@ def construct_analytics_matrix(id):
 
     #get root
     root = tree.getroot()
-
-    #TESTCODE
-    test = []
-    for row in list_of_note_comb(root):
-        if row[1] > 1:
-            test.append(row)
-
-    test = sorted(test, key=lambda row: row[1])
-    pp = pprint.PrettyPrinter()
-    pp.pprint(test)
-    #END TESTCODE
 
     #parse the file
 
@@ -99,18 +96,30 @@ def construct_analytics_matrix(id):
 
     return analytics_matrix
 
+def get_most_pop_comb(id, min_size, min_occ):
+    #Load in songxml
+    tree = ET.parse("songs-xml/"+ id + ".xml")
+    root = tree.getroot()
+
+    pop_comb_list = []
+    for row in list_of_note_comb(root):
+        if len(row[0]) >= (min_size * 2) and row[1] > min_occ:
+            pop_comb_list.append(row)
+
+    pop_comb_list = sorted(pop_comb_list, key=lambda row: row[1])
+    return pop_comb_list
+
 def list_of_note_comb(root):
     set_of_notes = Set([])
     list_of_measures = []
     for measure in root.findall("part/measure"):
         substrings = all_ordered_measure_substrings(measure)
-        temp_set = Set(substrings)
+        temp_set = Set(list(substrings))
         set_of_notes = set_of_notes | temp_set
         list_of_measures.append(substrings)
 
     list_of_notes = sorted(list(set_of_notes), key=lambda row: len(row))
 
-    list_of_measures = np.array(list_of_measures)
     note_comb_ctr = []
 
     for i in range(len(list_of_notes)):
@@ -135,7 +144,7 @@ def all_ordered_measure_substrings(measure):
             notes.append("R0")
 
     #Make all the possible combinations and return the list
-    resultList=[]
+    resultList= []
 
     for i in range(len(notes)):
         prev = notes[i]
