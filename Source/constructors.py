@@ -93,7 +93,6 @@ def construct_analytics_matrix(id):
 
 def construct_note_pattern_matrix_trainset(filename):
     setfile= open(filename)
-    print(filename)
     reader = csv.reader(setfile, delimiter=";")
 
     #General Statistics
@@ -128,8 +127,49 @@ def construct_note_pattern_matrix_trainset(filename):
         count = sum(sum(row[1] for row in matrix if row[0] == different_comb[i]) for matrix in pop_notes_matrices_set)
         global_combinations.append([different_comb[i], count])
     global_combinations = sorted(global_combinations, key=lambda row: row[1])
-    print global_combinations
+    best_global_combinations = np.rot90(global_combinations)[1][-50:]
 
+    setfile= open(filename)
+    reader = csv.reader(setfile, delimiter=";")
+
+    compared_notes_matrices = []
+    for row in reader:
+        id_file = row[0]
+        tree = ET.parse("songs-xml/"+ id_file + ".xml")
+        root = tree.getroot()
+        list_of_notes = list_of_note_comb(root)
+        compare_notes = []
+        for i in range(len(best_global_combinations)):
+            count = sum(row[1] for row in list_of_notes if row[0] == best_global_combinations[i])
+            compare_notes.append(count)
+        compared_notes_matrices.append(compare_notes)
+
+
+    return compared_notes_matrices, best_global_combinations
+
+
+#Constructs a analytics matrix for testset
+def construct_note_pattern_testset(filename, global_combinations):
+    set_ids = []
+    analytics_matrices_set = []
+    setfile= open(filename)
+    reader = csv.reader(setfile, delimiter=";")
+    compared_notes_matrices = []
+    for row in reader:
+        id_file = row[0]
+        tree = ET.parse("songs-xml/"+ id_file + ".xml")
+        root = tree.getroot()
+        list_of_notes = list_of_note_comb(root)
+        compare_notes = []
+        for i in range(len(global_combinations)):
+            count = sum(row[1] for row in list_of_notes if row[0] == global_combinations[i])
+            compare_notes.append(count)
+        compared_notes_matrices.append(compare_notes)
+        set_ids.append(id_file)
+
+
+
+    return compared_notes_matrices,set_ids
 
 
 
