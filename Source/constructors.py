@@ -30,6 +30,9 @@ def construct_analytics_matrix_trainset(filename, features_selection_procedure )
         #get information of trainingsset
         id_file = row[0]
 
+        tempo = calculate_tempo(id_file)
+        print("ID: %d / Tempo: %d"%(id_file, tempo)
+
         analytics_matrix = features_selection_procedure(id_file)
 
         Performers_solution.append(row[1])
@@ -160,7 +163,7 @@ def construct_note_pattern_matrix_trainset(filename):
         count = sum(sum(row[1] for row in matrix if row[0] == different_comb[i]) for matrix in pop_notes_matrices_set)
         global_combinations.append([different_comb[i], count])
     global_combinations = sorted(global_combinations, key=lambda row: row[1])
-    best_global_combinations = np.rot90(global_combinations)[1][-50:]
+    best_global_combinations = np.rot90(global_combinations)[1][-100:]
 
     setfile= open(filename)
     reader = csv.reader(setfile, delimiter=";")

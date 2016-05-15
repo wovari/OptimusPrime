@@ -1,5 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from mido import MidiFile as mf
+import xml.etree.ElementTree as ET
+import math
+
 
 def map_step_to_index(Step):
     mapping_dict = {'C': 0, 'C#': 1, 'D':2 ,'D#':3 , 'E':4 ,'F':5 ,'F#':6 ,'G':7 , 'G#':8 , 'A':9 , 'A#':10 , 'B': 11}
@@ -10,7 +14,23 @@ def map_type_to_index(Type):
     mapping_dict = {'maxima': 0, 'long': 1, 'breve':2 ,'whole':3 , 'half':4, 'quarter':5,'eighth':6, '16th':7,'32nd':8, '64th':9,'128th':10, '256th':11,'512th':12,'1024th':13}
     return mapping_dict[Type]
 
+def calculate_tempo(Idx):
+    #Load in songxml
+    tree = ET.parse("songs-xml/"+ Idx + ".xml")
+    midi = mf("songs-midi/" + Idx + ".midi")
 
+    midiLength = midi.length
+
+    #get root
+    root = tree.getroot()
+
+    beats = root.find('beats')
+
+    noOfMeasures = root.find('//measure[last()]/@number')
+
+    tempo = (beats * noOfMeasures * 60) / midiLength
+
+    return math.floor(tempo)
 
 
 
