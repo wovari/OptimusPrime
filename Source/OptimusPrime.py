@@ -74,6 +74,7 @@ Tempos_SVC.fit(pop_notes_matrices_trainingsset,Tempos_solution)
 
 pop_notes_matrices_testset, testset_id = construct_note_pattern_testset(sys.argv[2], best_global)
 
+
 # analytics_matrices_testset = extract_features_of_trainingsset(analytics_matrices_testset,index_set)
 
 # Performers_predictions = Performers_SVC.predict(analytics_matrices_testset)
@@ -85,7 +86,11 @@ Styles_predictions = Styles_SVC.predict(pop_notes_matrices_testset)
 # Years_predictions = Years_SVC.predict(analytics_matrices_testset)
 Years_predictions = Years_SVC.predict(pop_notes_matrices_testset)
 # Tempos_predictions = Tempos_SVC.predict(analytics_matrices_testset)
-Tempos_predictions = Tempos_SVC.predict(pop_notes_matrices_testset)
+#Tempos_predictions = Tempos_SVC.predict(pop_notes_matrices_testset)
+
+Tempos_predictions = construct_tempo_array(sys.argv[2])
+print len(Tempos_predictions)
+print len(testset_id)
 
 
 

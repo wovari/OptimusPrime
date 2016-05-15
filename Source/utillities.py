@@ -24,9 +24,9 @@ def calculate_tempo(Idx):
     #get root
     root = tree.getroot()
 
-    beats = root.find('beats')
+    beats = int(root.find('.//beats').text)
 
-    noOfMeasures = root.find('//measure[last()]/@number')
+    noOfMeasures = int(root.find('.//measure[last()]').get('number'))
 
     tempo = (beats * noOfMeasures * 60) / midiLength
 

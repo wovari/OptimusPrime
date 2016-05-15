@@ -30,9 +30,6 @@ def construct_analytics_matrix_trainset(filename, features_selection_procedure )
         #get information of trainingsset
         id_file = row[0]
 
-        tempo = calculate_tempo(id_file)
-        print("ID: %d / Tempo: %d"%(id_file, tempo)
-
         analytics_matrix = features_selection_procedure(id_file)
 
         Performers_solution.append(row[1])
@@ -64,6 +61,18 @@ def construct_analytics_matrix_testset(filename, features_selection_procedure):
 
         set_ids.append(id)
     return analytics_matrices_set,set_ids
+
+def construct_tempo_array(filename):
+    set_ids = []
+    tempo_list = []
+    setfile = open(filename)
+    reader = csv.reader(setfile, delimiter=";")
+    for row in reader:
+        id = row[0]
+        tempo = calculate_tempo(id)
+        tempo_list.append(tempo)
+    return tempo_list
+
 
 
 def construct_analytics_matrix(id):
