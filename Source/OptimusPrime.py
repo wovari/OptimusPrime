@@ -7,6 +7,7 @@ from utillities import *
 from constructors import *
 from sklearn.svm import SVC
 from sklearn.decomposition import TruncatedSVD
+from sklearn import linear_model
 import matplotlib.pyplot as plt
 
 #id;Performer;Title;Inst.;Style;Year;Tempo;Number of Notes
@@ -27,7 +28,7 @@ new_matrix_set,index_set = extract_useful_features(analytics_matrices_trainingss
 
 analytics_matrices_trainingsset = new_matrix_set
 
-
+tempo_training = construct_tempo_array(sys.argv[1])
 
 #code to make scatter plots
 #pretty plot
@@ -61,12 +62,10 @@ Years_SVC = SVC()
 # Years_SVC.fit(analytics_matrices_trainingsset,Years_solution)
 Years_SVC.fit(pop_notes_matrices_trainingsset,Years_solution)
 
-Tempos_SVC = SVC()
+#Tempos_SVC = SVC()
 # print(Tempos_solution)
 # Tempos_SVC.fit(analytics_matrices_trainingsset,Tempos_solution)
-Tempos_SVC.fit(pop_notes_matrices_trainingsset,Tempos_solution)
-
-
+#Tempos_SVC.fit(pop_notes_matrices_trainingsset,Tempos_solution)
 
 
 # analytics_matrices_testset, testset_id =  construct_analytics_matrix_testset(sys.argv[2],construct_analytics_matrix)
@@ -89,10 +88,6 @@ Years_predictions = Years_SVC.predict(pop_notes_matrices_testset)
 #Tempos_predictions = Tempos_SVC.predict(pop_notes_matrices_testset)
 
 Tempos_predictions = construct_tempo_array(sys.argv[2])
-print len(Tempos_predictions)
-print len(testset_id)
-
-
 
 with open(sys.argv[3], 'w') as csvfile:
     fieldnames = ['id','Performer','Inst','Style','Year','Tempo']
