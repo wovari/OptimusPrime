@@ -33,7 +33,6 @@ def calculate_tempo(Idx):
     return math.floor(tempo)
 
 
-
 def pretty_scatter(values, legend, output):
 
     scatter_dict = {}
@@ -100,3 +99,16 @@ def extract_features_of_trainingsset(testset, index_set):
     print("Reducing testset features From " + str(len(testset[0])) + " To " + str(len(new_matrix_set[0])))
 
     return new_matrix_set
+
+def compare_fp(fp1, fp2):
+    result = np.zeros(len(fp1))
+    ctr = 0
+    for x in fp1:
+        tpl = x[0]
+        for y in fp2:
+            tpl2 = y[0]
+            if len(tpl) == len(tpl2):
+                if tpl == tpl2:
+                    result[ctr] = y[1]
+        ctr += 1
+    return result

@@ -10,6 +10,7 @@ from utillities import *
 from constructors import *
 from sklearn.svm import SVC
 from sklearn.decomposition import TruncatedSVD
+from fim import fpgrowth
 import matplotlib.pyplot as plt
 #Constructs a analytics matrix for trainingsset
 def construct_analytics_matrix_trainset(filename, features_selection_procedure ):
@@ -24,7 +25,6 @@ def construct_analytics_matrix_trainset(filename, features_selection_procedure )
     Tempos_solution = []
     analytics_matrices_set = []
     set_ids = []
-
     for row in reader:
 
         #get information of trainingsset
@@ -135,6 +135,51 @@ def construct_note_type_feature_matrix(id):
 
 
 
+def construct_fp_train(filename):
+    setfile= open(filename)
+    reader = csv.reader(setfile, delimiter=";")
+
+    #General Statistics
+    set_ids = []
+    measures = []
+    notes_fp = []
+    results = []
+
+    for row in reader:
+        id_file = row[0]
+
+        set_ids.append(id_file)
+        measures.append(get_measures(id_file))
+
+    measures = itertools.chain(*measures)
+    notes_fp = fpgrowth(list(measures), report='S', zmin=2)
+    print len(notes_fp)
+    setfile= open(filename)
+    reader = csv.reader(setfile, delimiter=";")
+    for row in reader:
+        id_file = row[0]
+        measure = get_measures(id_file)
+        fp_song = fpgrowth(measure ,report='S', zmin=2)
+        result = compare_fp(notes_fp, fp_song)
+        results.append(result)
+
+    return results, notes_fp
+
+def construct_fp_test(filename, notes_fp):
+    setfile= open(filename)
+    reader = csv.reader(setfile, delimiter=";")
+    results = []
+    ids = []
+    for row in reader:
+        id_file = row[0]
+        measure = get_measures(id_file)
+        fp_song = fpgrowth(measure, report='S', zmin=2)
+        result = compare_fp(notes_fp, fp_song)
+        results.append(result)
+        ids.append(id_file)
+
+    return results, ids
+
 
 def construct_note_pattern_matrix_trainset(filename):
     setfile= open(filename)
@@ -148,6 +193,10 @@ def construct_note_pattern_matrix_trainset(filename):
     Tempos_solution = []
     pop_notes_matrices_set = []
     set_ids = []
+    performer_rules = {}
+    instrument_rules = {}
+    style_rules={}
+    year_rules={}
 
     different_comb = Set([])
 
@@ -277,3 +326,27 @@ def all_ordered_measure_substrings(measure):
                 resultList.append(prev)
 
     return resultList
+
+def get_measures(id):
+    tree = ET.parse("songs-xml/"+ id + ".xml")
+    root = tree.getroot()
+    measures = []
+    for measure in root.findall("part/measure"):
+        steps = measure_step_list(measure)
+        measures.append(steps)
+
+    return measures
+
+
+
+def measure_step_list(measure):
+    steps = []
+    for note in measure.findall("note"):
+        rest = note.find("rest")
+        if rest is None :
+            step = note.find("pitch/step").text
+            steps.append(step)
+        else:
+            steps.append("R")
+
+    return steps
