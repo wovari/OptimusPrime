@@ -12,6 +12,7 @@ from sklearn.svm import SVC
 from sklearn.decomposition import TruncatedSVD
 from fim import fpgrowth
 import matplotlib.pyplot as plt
+
 #Constructs a analytics matrix for trainingsset
 def construct_analytics_matrix_trainset(filename, features_selection_procedure ):
     setfile= open(filename)
@@ -327,6 +328,7 @@ def all_ordered_measure_substrings(measure):
 
     return resultList
 
+<<<<<<< HEAD
 def get_measures(id):
     tree = ET.parse("songs-xml/"+ id + ".xml")
     root = tree.getroot()
@@ -350,3 +352,81 @@ def measure_step_list(measure):
             steps.append("R")
 
     return steps
+=======
+# updates the values in the matrix according to constrast mininig
+def update_contrast_values(key, dictionary, newvalue):
+    
+    #if key is already in the dictionary and value needs to be updated
+    if key in dictionary:
+
+        pair = dictionary[key]
+        count = pair[0] + 1
+        dic = pair[1]
+        result = np.zeros((12,11))
+        # iterate through rows
+        for i in range(len(dic)):
+           # iterate through columns
+           for j in range(len(dic[0])):
+               result[i][j] = dic[i][j] + newvalue[i][j]
+        #store results in dictionary 
+        dictionary[key]  = (count,dic)
+    #add new value to dictionary
+    else:
+        dictionary[key]  = (1,newvalue)
+
+
+#takes the average of every group
+def normalize_constrast_values(dictionary):
+
+    for x in dictionary:
+        pair = dictionary[x[]
+        count = pair[0]
+        dic = pair[1]
+        #normalize dictionaries
+        dictionary[x] = [y / float(count) for y in dic]
+
+
+
+def construct_analytics_matrix_constrast_mining(filename, features_selection_procedure):
+    setfile= open(filename)
+    reader = csv.reader(setfile, delimiter=";")
+
+    #gather for each set information
+    Performers_solution = {}
+    Insts_solution = {}
+    Styles_solution = {}
+    Years_solution = {}
+    Tempos_solution = {}
+
+    #parse each element of trainingsset
+    for row in reader:
+
+        #get information of trainingsset
+        id_file = row[0]
+        
+        analytics_matrix = construct_analytics_matrix(id_file)
+
+        #add element to dictionaries and update accodingly
+        update_contrast_values(row[1],Performers_solution,analytics_matrix)
+        update_contrast_values(row[3],Insts_solution,analytics_matrix)
+        update_contrast_values(row[4],Styles_solution,analytics_matrix)
+        update_contrast_values(row[5],Years_solution,analytics_matrix)
+        update_contrast_values(row[6],Tempos_solution,analytics_matrix)
+
+
+
+    #take average values of grouped features
+    normalize_constrast_values(Performers_solution)
+    normalize_constrast_values(Insts_solution)
+    normalize_constrast_values(Styles_solution)
+    normalize_constrast_values(Years_solution)
+    normalize_constrast_values(Tempos_solution)
+
+
+    return Performers_solution,Insts_solution,Styles_solution,Years_solution,Tempos_solution
+    
+
+
+
+
+>>>>>>> 5019fd8e5e94c8d1f2f14e4fb271576c12c45763
