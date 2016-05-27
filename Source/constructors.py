@@ -379,7 +379,7 @@ def update_contrast_values(key, dictionary, newvalue):
 def normalize_constrast_values(dictionary):
 
     for x in dictionary:
-        pair = dictionary[x[]
+        pair = dictionary[x]
         count = pair[0]
         dic = pair[1]
         #normalize dictionaries
