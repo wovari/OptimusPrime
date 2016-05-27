@@ -328,7 +328,6 @@ def all_ordered_measure_substrings(measure):
 
     return resultList
 
-<<<<<<< HEAD
 def get_measures(id):
     tree = ET.parse("songs-xml/"+ id + ".xml")
     root = tree.getroot()
@@ -352,10 +351,10 @@ def measure_step_list(measure):
             steps.append("R")
 
     return steps
-=======
+
 # updates the values in the matrix according to constrast mininig
 def update_contrast_values(key, dictionary, newvalue):
-    
+
     #if key is already in the dictionary and value needs to be updated
     if key in dictionary:
 
@@ -368,7 +367,7 @@ def update_contrast_values(key, dictionary, newvalue):
            # iterate through columns
            for j in range(len(dic[0])):
                result[i][j] = dic[i][j] + newvalue[i][j]
-        #store results in dictionary 
+        #store results in dictionary
         dictionary[key]  = (count,dic)
     #add new value to dictionary
     else:
@@ -379,7 +378,7 @@ def update_contrast_values(key, dictionary, newvalue):
 def normalize_constrast_values(dictionary):
 
     for x in dictionary:
-        pair = dictionary[x[]
+        pair = dictionary[x]
         count = pair[0]
         dic = pair[1]
         #normalize dictionaries
@@ -403,7 +402,7 @@ def construct_analytics_matrix_constrast_mining(filename, features_selection_pro
 
         #get information of trainingsset
         id_file = row[0]
-        
+
         analytics_matrix = construct_analytics_matrix(id_file)
 
         #add element to dictionaries and update accodingly
@@ -424,9 +423,3 @@ def construct_analytics_matrix_constrast_mining(filename, features_selection_pro
 
 
     return Performers_solution,Insts_solution,Styles_solution,Years_solution,Tempos_solution
-    
-
-
-
-
->>>>>>> 5019fd8e5e94c8d1f2f14e4fb271576c12c45763
