@@ -121,10 +121,10 @@ Years_predictions = Years_SVC.predict(fp_testset)
 
 # Tempos_predictions = Tempos_SVC.predict(analytics_matrices_testset)
 #Tempos_predictions = Tempos_SVC.predict(pop_notes_matrices_testset)
-Tempos_predictions = Tempos_SVC.predict(fp_testset)
+# Tempos_predictions = Tempos_SVC.predict(fp_testset)
 
 
-# Tempos_predictions = construct_tempo_array(sys.argv[2])
+Tempos_predictions = construct_tempo_array(sys.argv[2])
 
 with open(sys.argv[3], 'w') as csvfile:
     fieldnames = ['id','Performer','Inst','Style','Year','Tempo']
