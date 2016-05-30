@@ -10,7 +10,6 @@ def create_m21_dataset():
     return ds
 
 def add_song_to_dataset(song_id, ds):
-    print "Add song: %s"%(song_id)
     filename = "songs-xml/"+ song_id + ".xml"
     ds.addData(filename, classValue=song_id)
     return ds
@@ -23,8 +22,6 @@ def create_list(ds):
     fList = ds.getFeaturesAsList()
     newList = []
     for feature in fList:
-        print feature
         newFeature = feature[1:-1]
         newList.append(newFeature)
-        print newFeature
     return newList
