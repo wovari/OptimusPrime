@@ -8,6 +8,7 @@ import numpy as np
 from sets import Set
 from utillities import *
 from constructors import *
+from music21helper import *
 from sklearn.svm import SVC
 from sklearn.decomposition import TruncatedSVD
 from fim import fpgrowth
@@ -41,8 +42,8 @@ def construct_analytics_matrix_trainset(filename, features_selection_procedure )
         set_ids.append(id_file)
         analytics_matrices_set.append(analytics_matrix.flatten())
 
-
     return analytics_matrices_set,set_ids,Performers_solution,Insts_solution,Styles_solution,Years_solution,Tempos_solution
+
 
 
 #Constructs a analytics matrix for testset
@@ -62,6 +63,53 @@ def construct_analytics_matrix_testset(filename, features_selection_procedure):
 
         set_ids.append(id)
     return analytics_matrices_set,set_ids
+
+def construct_feature_list(filename):
+    setfile= open(filename)
+    print(filename)
+    reader = csv.reader(setfile, delimiter=";")
+    #General Statistics
+    Performers_solution = []
+    Insts_solution = []
+    Styles_solution = []
+    Years_solution = []
+    Tempos_solution = []
+    set_ids = []
+    ds = create_m21_dataset()
+    for row in reader:
+
+        #get information of trainingsset
+        id_file = row[0]
+        add_song_to_dataset(id_file, ds)
+        Performers_solution.append(row[1])
+        Insts_solution.append(row[3])
+        Styles_solution.append(row[4])
+        Years_solution.append(row[5])
+        Tempos_solution.append(row[6])
+        set_ids.append(id_file)
+
+    process_dataset(ds)
+    fList = create_list(ds)
+    return fList,set_ids,Performers_solution,Insts_solution,Styles_solution,Years_solution,Tempos_solution
+
+def construct_test_feature_list(filename):
+    setfile= open(filename)
+    print(filename)
+    reader = csv.reader(setfile, delimiter=";")
+    #General Statistics
+    set_ids = []
+    ds = create_m21_dataset()
+    for row in reader:
+
+        #get information of trainingsset
+        id_file = row[0]
+        add_song_to_dataset(id_file, ds)
+        set_ids.append(id_file)
+
+    process_dataset(ds)
+    fList = create_list(ds)
+    return fList,set_ids
+
 
 def construct_tempo_array(filename):
     set_ids = []
